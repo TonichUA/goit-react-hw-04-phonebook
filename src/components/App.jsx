@@ -5,19 +5,12 @@ import Filter from './Filter';
 import ContactList from './ContactList';
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
+  const [contacts, setContacts] = useState(() => {
     const storedContacts = localStorage.getItem('contacts');
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
-  }, []);
+    return storedContacts ? JSON.parse(storedContacts) : [];
+  });
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const [filter, setFilter] = useState('');
 
   const addContact = (name, number) => {
     if (
@@ -43,6 +36,10 @@ const App = () => {
       prevContacts.filter(contact => contact.id !== contactId)
     );
   };
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
